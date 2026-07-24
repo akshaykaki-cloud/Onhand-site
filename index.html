@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OnHand — the floor assistant that knows what's on your shelf</title>
+<meta name="description" content="An AI assistant for retail floor staff, grounded in the store's own inventory. It answers with real stock and aisle — and says 'I don't know' instead of guessing." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --void:#0C0E10;
+  --steel:#15181C;
+  --steel2:#1B1F24;
+  --rule:#282D33;
+  --paper:#EDEFF1;
+  --dim:#8B9299;
+  --faint:#5F666D;
+  --amber:#F5A623;
+  --amber-dk:#2B2011;
+  --go:#5FB878;
+  --stop:#E5544B;
+  --info:#6C9DBE;
+  --dsp:'Archivo',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --body:'Inter',system-ui,sans-serif;
+  --gut:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--void);color:var(--paper);
+  font-family:var(--body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit}
+img,svg{display:block;max-width:100%}
+
+/* ---------- shared type ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--amber);
+  display:flex;align-items:center;gap:10px;margin:0 0 18px;
+}
+.eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--rule),transparent);max-width:120px}
+h2.hd{
+  font-family:var(--dsp);font-weight:800;letter-spacing:-.03em;line-height:1.05;
+  font-size:clamp(28px,4.6vw,50px);margin:0 0 18px;
+}
+.lede{font-size:clamp(16px,1.6vw,18.5px);color:var(--dim);max-width:60ch;margin:0}
+.lede strong{color:var(--paper);font-weight:600}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding-inline:var(--gut)}
+section{position:relative;padding-block:clamp(72px,10vw,132px)}
+.hair{height:1px;background:var(--rule);border:0;margin:0}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(12,14,16,.82);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--rule);
+}
+.nav-in{display:flex;align-items:center;gap:14px;height:62px}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--amber);display:grid;place-items:center;flex-shrink:0}
+.wordmark{font-family:var(--dsp);font-weight:800;font-size:17px;letter-spacing:-.02em}
+.nav-tag{
+  font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  letter-spacing:.14em;text-transform:uppercase;margin-left:2px;
+}
+.nav-sp{flex:1}
+.nav-cta{
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em;
+  text-decoration:none;color:var(--void);background:var(--amber);
+  padding:9px 15px;border-radius:7px;font-weight:600;white-space:nowrap;
+  transition:transform .18s ease,filter .18s ease;
+}
+.nav-cta:hover{transform:translateY(-1px);filter:brightness(1.08)}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(52px,7vw,86px);padding-bottom:clamp(56px,7vw,96px);overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-grid{
+  position:absolute;inset:-40% -10% 0;
+  background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:58px 58px;opacity:.34;
+  mask-image:radial-gradient(120% 78% at 22% 8%,#000 0%,transparent 66%);
+  -webkit-mask-image:radial-gradient(120% 78% at 22% 8%,#000 0%,transparent 66%);
+  animation:drift 34s linear infinite;
+}
+@keyframes drift{to{transform:translate3d(58px,58px,0)}}
+.hero-glow{
+  position:absolute;width:min(760px,90vw);aspect-ratio:1;left:-14%;top:-32%;
+  background:radial-gradient(circle,rgba(245,166,35,.15),transparent 62%);
+  filter:blur(28px);animation:breathe 13s ease-in-out infinite;
+}
+@keyframes breathe{50%{opacity:.55;transform:scale(1.14)}}
+.hero-in{position:relative;z-index:1;display:grid;gap:clamp(40px,5vw,66px);grid-template-columns:1fr;align-items:center}
+@media(min-width:940px){.hero-in{grid-template-columns:1.02fr .98fr}}
+
+.h1{
+  font-family:var(--dsp);font-weight:900;letter-spacing:-.042em;line-height:.98;
+  font-size:clamp(40px,7.2vw,74px);margin:0 0 22px;
+}
+.h1 .lit{
+  color:var(--amber);position:relative;white-space:nowrap;
+}
+.h1 .lit::after{
+  content:"";position:absolute;left:0;right:0;bottom:.08em;height:.09em;
+  background:var(--amber);opacity:.28;
+}
+.hero-sub{font-size:clamp(16.5px,1.8vw,19.5px);color:var(--dim);max-width:50ch;margin:0 0 30px}
+.hero-sub strong{color:var(--paper);font-weight:600}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{
+  font-family:var(--dsp);font-weight:700;font-size:14.5px;text-decoration:none;
+  padding:13px 22px;border-radius:9px;display:inline-flex;align-items:center;gap:9px;
+  transition:transform .18s ease,filter .18s ease,border-color .18s ease,background .18s ease;
+}
+.btn-a{background:var(--amber);color:var(--amber-dk)}
+.btn-a:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.btn-b{border:1px solid var(--rule);color:var(--paper)}
+.btn-b:hover{border-color:var(--amber);transform:translateY(-2px)}
+
+/* the aisle-tag strip under the hero copy */
+.tagstrip{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
+.tag{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);border:1px solid var(--rule);border-radius:20px;padding:5px 11px;
+}
+
+/* ---------- device / live demo ---------- */
+.device{
+  border:1px solid var(--rule);border-radius:16px;background:var(--steel);
+  overflow:hidden;box-shadow:0 30px 70px -30px rgba(0,0,0,.9);
+  max-width:440px;width:100%;margin-inline:auto;
+}
+.dev-bar{
+  display:flex;align-items:center;gap:9px;padding:11px 14px;
+  background:var(--steel2);border-bottom:1px solid var(--rule);
+}
+.dev-name{font-family:var(--dsp);font-weight:700;font-size:13.5px;line-height:1.1}
+.dev-store{font-family:var(--mono);font-size:9.5px;color:var(--faint);letter-spacing:.03em}
+.dev-live{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  border:1px solid var(--rule);border-radius:20px;padding:4px 9px;
+  font-family:var(--mono);font-size:9.5px;color:var(--dim);white-space:nowrap;
+}
+.pip{width:6px;height:6px;border-radius:50%;background:var(--go);animation:pip 2.1s ease-in-out infinite}
+@keyframes pip{50%{opacity:.25}}
+
+.dev-body{padding:16px 14px;min-height:352px;display:flex;flex-direction:column;gap:12px;justify-content:flex-end}
+.msg{max-width:88%;padding:10px 13px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;opacity:0;transform:translateY(8px);animation:pop .34s ease forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+.msg-q{align-self:flex-end;background:var(--amber);color:var(--amber-dk);border-radius:13px 13px 4px 13px;font-weight:500}
+.msg-a{align-self:flex-start;background:var(--steel2);border:1px solid var(--rule);border-radius:13px 13px 13px 4px}
+.caret{display:inline-block;width:2px;height:1em;background:var(--amber-dk);vertical-align:-2px;margin-left:1px;animation:caret .9s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.working{display:flex;align-items:center;gap:6px;align-self:flex-start;padding:2px}
+.working span{width:6px;height:6px;border-radius:50%;background:var(--amber);animation:pip 1s ease-in-out infinite}
+.working span:nth-child(2){animation-delay:.16s}
+.working span:nth-child(3){animation-delay:.32s}
+.working b{font-family:var(--mono);font-size:10.5px;color:var(--dim);font-weight:400;margin-left:3px}
+
+/* inventory tag — the signature artifact */
+.slip{
+  align-self:flex-start;width:88%;background:var(--steel2);
+  border:1px solid var(--rule);border-left:3px solid var(--go);border-radius:8px;
+  padding:10px 12px;opacity:0;transform:translateY(8px);animation:pop .34s ease forwards;
+}
+.slip.out{border-left-color:var(--stop)}
+.slip-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slip-nm{font-family:var(--dsp);font-weight:600;font-size:12.5px;line-height:1.25}
+.slip-pr{font-family:var(--mono);font-weight:600;font-size:13px;white-space:nowrap}
+.slip-meta{font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-top:3px}
+.slip-row{display:flex;gap:13px;margin-top:8px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;font-weight:600}
+.slip-go{color:var(--go)}
+.slip-stop{color:var(--stop)}
+.slip-loc{color:var(--info);font-weight:500}
+
+/* ---------- problem ---------- */
+.split{display:grid;gap:clamp(28px,4vw,54px);grid-template-columns:1fr}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr;align-items:center}}
+.quote{
+  border-left:2px solid var(--amber);padding:4px 0 4px 22px;
+  font-family:var(--dsp);font-weight:600;font-size:clamp(19px,2.6vw,26px);
+  line-height:1.34;letter-spacing:-.02em;
+}
+.quote cite{
+  display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+  font-style:normal;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;
+}
+.gap-list{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.gap-list li{background:var(--steel);padding:15px 17px;display:flex;gap:13px;align-items:flex-start}
+.gap-list .x{color:var(--stop);font-family:var(--mono);font-size:13px;line-height:1.5;flex-shrink:0}
+.gap-list p{margin:0;font-size:14.5px;color:var(--dim)}
+.gap-list b{color:var(--paper);font-weight:600}
+
+/* ---------- steps ---------- */
+.steps{display:grid;gap:18px;grid-template-columns:1fr;margin-top:44px}
+@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{
+  border:1px solid var(--rule);border-radius:13px;background:var(--steel);
+  padding:24px 22px 26px;position:relative;overflow:hidden;
+  transition:border-color .22s ease,transform .22s ease;
+}
+.step:hover{border-color:var(--amber);transform:translateY(-3px)}
+.step-n{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--amber);
+  display:block;margin-bottom:14px;
+}
+.step h3{font-family:var(--dsp);font-weight:700;font-size:17.5px;letter-spacing:-.02em;margin:0 0 9px}
+.step p{margin:0;font-size:14.5px;color:var(--dim);line-height:1.62}
+
+/* ---------- the constraint (signature section) ---------- */
+.constraint{background:linear-gradient(180deg,transparent,rgba(245,166,35,.035),transparent)}
+.vs{display:grid;gap:16px;grid-template-columns:1fr;margin-top:44px}
+@media(min-width:840px){.vs{grid-template-columns:1fr 1fr;gap:20px}}
+.pane{border:1px solid var(--rule);border-radius:13px;background:var(--steel);overflow:hidden;display:flex;flex-direction:column}
+.pane-hd{
+  padding:13px 17px;border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  display:flex;align-items:center;gap:9px;
+}
+.pane-bad .pane-hd{color:var(--stop)}
+.pane-good .pane-hd{color:var(--go)}
+.pane-body{padding:19px 17px;display:flex;flex-direction:column;gap:11px;flex:1}
+.ask{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em}
+.reply{font-size:14.5px;line-height:1.6;margin:0}
+.pane-bad .reply{color:var(--dim)}
+.verdict{
+  margin-top:auto;padding-top:14px;border-top:1px dashed var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;
+}
+.pane-bad .verdict{color:var(--stop)}
+.pane-good .verdict{color:var(--go)}
+.pull{
+  margin-top:40px;padding:26px clamp(20px,4vw,40px);border:1px solid var(--rule);
+  border-radius:13px;background:var(--steel);
+  font-family:var(--dsp);font-weight:700;letter-spacing:-.025em;line-height:1.3;
+  font-size:clamp(19px,2.8vw,27px);
+}
+.pull span{color:var(--amber)}
+
+/* ---------- value grid ---------- */
+.vals{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:13px;overflow:hidden;margin-top:44px;grid-template-columns:1fr}
+@media(min-width:700px){.vals{grid-template-columns:1fr 1fr}}
+.val{background:var(--steel);padding:26px 24px;transition:background .22s ease}
+.val:hover{background:var(--steel2)}
+.val-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:12px}
+.val h3{font-family:var(--dsp);font-weight:700;font-size:17px;letter-spacing:-.02em;margin:0 0 8px}
+.val p{margin:0;font-size:14.5px;color:var(--dim);line-height:1.62}
+
+/* ---------- learned ---------- */
+.learned{border-top:1px solid var(--rule)}
+.note{
+  border:1px solid var(--rule);border-radius:13px;background:var(--steel);
+  padding:clamp(24px,3.4vw,38px);margin-top:36px;
+}
+.note p{font-size:15.5px;color:var(--dim);line-height:1.72;margin:0 0 15px;max-width:74ch}
+.note p:last-child{margin-bottom:0}
+.note strong{color:var(--paper);font-weight:600}
+
+/* ---------- cta ---------- */
+.cta{text-align:center;border-top:1px solid var(--rule)}
+.cta h2{font-family:var(--dsp);font-weight:900;letter-spacing:-.035em;line-height:1.04;font-size:clamp(30px,5.4vw,54px);margin:0 0 18px}
+.cta p{color:var(--dim);max-width:52ch;margin:0 auto 30px;font-size:16.5px}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+footer{border-top:1px solid var(--rule);padding-block:30px}
+.foot-in{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em}
+.foot-in .sp{flex:1}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.22,.7,.3,1),transform .7s cubic-bezier(.22,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <span class="mark" aria-hidden="true">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 12a6 6 0 0 1 11-3.3l-2.2 2.2a3 3 0 1 0 .1 4.2l4.6 4.6a1.5 1.5 0 0 0 2.1-2.1l-4.6-4.6A6 6 0 0 1 6 12Z" fill="#2B2011" transform="translate(-1 -1) scale(.9)"/><circle cx="8.5" cy="12" r="2.3" fill="#2B2011"/></svg>
+    </span>
+    <span class="wordmark">OnHand</span>
+    <span class="nav-tag">Floor&nbsp;Assistant</span>
+    <span class="nav-sp"></span>
+    <a class="nav-cta" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Open the demo</a>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+  </div>
+  <div class="wrap hero-in">
+    <div>
+      <h1 class="h1 rv">It knows what's<br><span class="lit">actually on the shelf.</span></h1>
+      <p class="hero-sub rv rv-d1">
+        OnHand is an AI assistant for retail floor staff. Ask it a customer's question —
+        typed or spoken — and it answers from <strong>your store's own inventory</strong>:
+        the right product, how many are left, which aisle. And when you don't carry it,
+        it says so instead of making something up.
+      </p>
+      <div class="hero-btns rv rv-d2">
+        <a class="btn btn-a" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Try the live demo →</a>
+        <a class="btn btn-b" href="#how">How it works</a>
+      </div>
+      <div class="tagstrip rv rv-d3">
+        <span class="tag">Runs on a store device</span>
+        <span class="tag">Voice or text</span>
+        <span class="tag">Live stock &amp; aisle</span>
+        <span class="tag">Won't invent stock</span>
+      </div>
+    </div>
+
+    <!-- signature: the product demonstrating itself -->
+    <div class="device rv rv-d2" role="img" aria-label="A demonstration of OnHand answering two questions: first recommending toggle bolts with 34 in stock in Aisle 7, then reporting that N95 masks are out of stock with no substitute available.">
+      <div class="dev-bar">
+        <span class="mark" style="width:26px;height:26px;border-radius:7px" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 12a6 6 0 0 1 11-3.3l-2.2 2.2a3 3 0 1 0 .1 4.2l4.6 4.6a1.5 1.5 0 0 0 2.1-2.1l-4.6-4.6A6 6 0 0 1 6 12Z" fill="#2B2011" transform="translate(-1 -1) scale(.9)"/><circle cx="8.5" cy="12" r="2.3" fill="#2B2011"/></svg>
+        </span>
+        <span>
+          <span class="dev-name">OnHand</span><br>
+          <span class="dev-store">Bayview Hardware · Store #114</span>
+        </span>
+        <span class="dev-live"><span class="pip"></span>36 SKUs live</span>
+      </div>
+      <div class="dev-body" id="stage"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hair">
+
+<!-- ===================== PROBLEM ===================== -->
+<section>
+  <div class="wrap split">
+    <div class="rv">
+      <p class="eyebrow">Where this came from</p>
+      <blockquote class="quote">
+        When a customer asks something hard, staff quietly pull out their own phone
+        and ask a chatbot that has never seen the store.
+        <cite>— observed on a retail floor, not in a strategy deck</cite>
+      </blockquote>
+    </div>
+    <div class="rv rv-d1">
+      <p class="lede">
+        That workaround is everywhere, and it half-works. A general chatbot knows a lot
+        about products in the abstract. It knows <strong>nothing about this store.</strong>
+      </p>
+      <ul class="gap-list">
+        <li><span class="x">✕</span><p>It can't tell you if it's <b>in stock right now</b>.</p></li>
+        <li><span class="x">✕</span><p>It can't tell you <b>which aisle</b> to walk the customer to.</p></li>
+        <li><span class="x">✕</span><p>It will confidently recommend something <b>you don't carry</b>.</p></li>
+        <li><span class="x">✕</span><p>It happens on a <b>personal device</b>, off the record, outside the store's control.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="hair">
+
+<!-- ===================== HOW ===================== -->
+<section id="how">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">How it works</p>
+      <h2 class="hd">Three steps, no IT project.</h2>
+      <p class="lede">OnHand reads your product list the way a very fast new hire would — then never forgets it.</p>
+    </div>
+    <div class="steps">
+      <article class="step rv">
+        <span class="step-n">STEP 01</span>
+        <h3>Your catalog goes in</h3>
+        <p>Export your products from whatever POS you already use. A setup tool matches your columns — SKU, price, quantity, aisle — and loads them. Most stores are live the same day.</p>
+      </article>
+      <article class="step rv rv-d1">
+        <span class="step-n">STEP 02</span>
+        <h3>Staff ask in plain words</h3>
+        <p>"Customer wants to hang a 45&nbsp;lb mirror on drywall." No SKU, no menu, no training. Typed on the floor, or spoken hands-free while carrying something.</p>
+      </article>
+      <article class="step rv rv-d2">
+        <span class="step-n">STEP 03</span>
+        <h3>It answers from your shelf</h3>
+        <p>The right product for the actual job, with on-hand count and location. If the first choice is out, it offers the best in-stock alternative — from your catalog, not the internet.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<hr class="hair">
+
+<!-- ===================== THE CONSTRAINT ===================== -->
+<section class="constraint">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">The part that matters</p>
+      <h2 class="hd">The most useful thing it does<br>is admit what it doesn't have.</h2>
+      <p class="lede">
+        A tool that invents stock is <strong>worse than no tool</strong> — because staff believe it,
+        repeat it to a customer, and the trust is gone. So OnHand is built to refuse.
+      </p>
+    </div>
+
+    <div class="vs">
+      <article class="pane pane-bad rv">
+        <div class="pane-hd"><span>✕</span> Generic chatbot</div>
+        <div class="pane-body">
+          <p class="ask">"Need N95 masks for sanding drywall."</p>
+          <p class="reply">Yes — you'll want a NIOSH-rated N95. Most hardware stores stock them in the safety aisle, usually near the respirators. A 10-pack typically runs about $20.</p>
+          <p class="verdict">Sounds right. Store is out of stock. Customer sent to an empty shelf.</p>
+        </div>
+      </article>
+      <article class="pane pane-good rv rv-d1">
+        <div class="pane-hd"><span>●</span> OnHand</div>
+        <div class="pane-body">
+          <p class="ask">"Need N95 masks for sanding drywall."</p>
+          <p class="reply">Out of stock — the 3M N95 10-pack (Aisle 1 · Bay C) is at zero. There's no direct substitute in stock right now, so let the customer know rather than sending them to the aisle.</p>
+          <p class="verdict">Grounded. Honest. The associate keeps their credibility.</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="pull rv">Every answer is tied to a real SKU on a real shelf. <span>If it isn't in your inventory, OnHand won't say it is.</span></p>
+  </div>
+</section>
+
+<hr class="hair">
+
+<!-- ===================== VALUE ===================== -->
+<section>
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">For a small store</p>
+      <h2 class="hd">What actually changes on the floor.</h2>
+      <p class="lede">Not "AI transformation." Four specific things a small retailer feels in a week.</p>
+    </div>
+    <div class="vals">
+      <div class="val rv">
+        <span class="val-k">Ramp-up</span>
+        <h3>A new hire stops being a liability</h3>
+        <p>The gap between someone's first week and their fifth year is where sales quietly leak. A new person can answer like the veteran standing next to them, on day one.</p>
+      </div>
+      <div class="val rv rv-d1">
+        <span class="val-k">Floor time</span>
+        <h3>Nobody walks away to go check</h3>
+        <p>The answer arrives while you're still standing with the customer. No trip to the back, no "let me find someone" — which is where a lot of sales are lost.</p>
+      </div>
+      <div class="val rv rv-d2">
+        <span class="val-k">Attachment</span>
+        <h3>The obvious add-on gets offered</h3>
+        <p>Sold a drill? It surfaces the bits, the case, the second battery — from what's actually in stock. The kind of prompt a great associate does automatically.</p>
+      </div>
+      <div class="val rv rv-d3">
+        <span class="val-k">Control</span>
+        <h3>Off personal phones, onto your device</h3>
+        <p>Staff are already asking AI. This puts it on a store device, grounded in your data, answering with your products instead of a stranger's guess.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LEARNED ===================== -->
+<section class="learned">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">Honest notes</p>
+      <h2 class="hd">What I found when I checked.</h2>
+    </div>
+    <div class="note rv rv-d1">
+      <p>
+        I built OnHand because I watched the problem happen on a sales floor. Then I did the thing
+        that's easy to skip: <strong>I checked whether anyone had already solved it.</strong>
+      </p>
+      <p>
+        They had. Ace Hardware, Lowe's and Walmart have all shipped associate-facing assistants
+        grounded in store inventory — at a scale a solo build can't approach. That closed one door
+        and opened a smaller, more honest one: those tools serve their own stores. The independent
+        retailer with a few locations and no in-house team still has the problem and no way to buy
+        a solution.
+      </p>
+      <p>
+        So OnHand isn't a pitch to displace anyone. It's a working answer to a narrower question —
+        <strong>what does this look like for a store that will never get an enterprise rollout?</strong>
+        Built to run on a real catalog, deploy in an afternoon, and be honest about its limits.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta">
+  <div class="wrap">
+    <h2 class="rv">See it answer<br>a real question.</h2>
+    <p class="rv rv-d1">The demo runs on a sample hardware catalog. Ask it something a customer would actually ask — then try to catch it inventing something.</p>
+    <div class="cta-btns rv rv-d2">
+      <a class="btn btn-a" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Open the demo →</a>
+      <a class="btn btn-b" href="#how">Read how it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>ONHAND — AI FLOOR ASSISTANT</span>
+    <span class="sp"></span>
+    <span>BUILT BY AKSHAY · KINGSTON, ON</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- scroll reveals ---------- */
+  var rv = document.querySelectorAll('.rv');
+  if (reduce || !('IntersectionObserver' in window)) {
+    rv.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    rv.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- the hero demo: OnHand demonstrating itself ---------- */
+  var stage = document.getElementById('stage');
+  if (!stage) return;
+
+  var SCRIPT = [
+    {
+      q: 'Customer wants to hang a 45 lb mirror on drywall',
+      a: 'Use the heavy-duty toggle bolts — rated 50–65 lb each in 1/2" drywall, so they clear 45 lb comfortably. The self-drilling anchors only hold 25 lb, so those won\'t do it.',
+      slip: { name: 'Heavy-Duty Toggle Bolts (10 pk)', price: '$11.00', meta: 'Toggler · Fasteners · FS-3010', stock: '● 34 on hand', loc: '▸ Aisle 7 · Bay A', out: false }
+    },
+    {
+      q: 'Need N95 masks for sanding drywall',
+      a: 'Out of stock — the 3M N95 10-pack is at zero. No direct substitute in stock, so flag it to the customer rather than sending them to the aisle.',
+      slip: { name: 'N95 Dust Masks (10 pk)', price: '$19.00', meta: '3M · Safety · SF-8050', stock: '● OUT OF STOCK', loc: '▸ Aisle 1 · Bay C', out: true }
+    }
+  ];
+
+  function el(cls, html){ var d = document.createElement('div'); d.className = cls; if (html != null) d.innerHTML = html; return d; }
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  function slipHTML(s){
+    return '<div class="slip-top"><div class="slip-nm">' + s.name + '</div><div class="slip-pr">' + s.price + '</div></div>' +
+           '<div class="slip-meta">' + s.meta + '</div>' +
+           '<div class="slip-row"><span class="' + (s.out ? 'slip-stop' : 'slip-go') + '">' + s.stock + '</span>' +
+           '<span class="slip-loc">' + s.loc + '</span></div>';
+  }
+
+  /* static fallback: show the full second exchange, no motion */
+  function renderStatic(){
+    var beat = SCRIPT[1];
+    stage.innerHTML = '';
+    var q = el('msg msg-q'); q.textContent = beat.q; q.style.animation = 'none'; q.style.opacity = 1; q.style.transform = 'none';
+    var a = el('msg msg-a'); a.textContent = beat.a; a.style.animation = 'none'; a.style.opacity = 1; a.style.transform = 'none';
+    var s = el('slip' + (beat.slip.out ? ' out' : ''), slipHTML(beat.slip)); s.style.animation = 'none'; s.style.opacity = 1; s.style.transform = 'none';
+    stage.appendChild(q); stage.appendChild(a); stage.appendChild(s);
+  }
+
+  if (reduce) { renderStatic(); return; }
+
+  var running = false;
+
+  async function typeInto(node, text, speed){
+    for (var i = 0; i <= text.length; i++){
+      node.innerHTML = text.slice(0, i).replace(/&/g,'&amp;').replace(/</g,'&lt;') + '<span class="caret"></span>';
+      await wait(speed);
+    }
+    node.textContent = text;
+  }
+
+  async function playBeat(beat){
+    var q = el('msg msg-q');
+    stage.appendChild(q);
+    await typeInto(q, beat.q, 26);
+    await wait(320);
+
+    var w = el('working', '<span></span><span></span><span></span><b>searching inventory…</b>');
+    stage.appendChild(w);
+    await wait(1150);
+    w.remove();
+
+    var a = el('msg msg-a');
+    a.textContent = beat.a;
+    stage.appendChild(a);
+    await wait(560);
+
+    var s = el('slip' + (beat.slip.out ? ' out' : ''), slipHTML(beat.slip));
+    stage.appendChild(s);
+    await wait(3400);
+  }
+
+  async function loop(){
+    if (running) return;
+    running = true;
+    while (true){
+      for (var i = 0; i < SCRIPT.length; i++){
+        stage.innerHTML = '';
+        await playBeat(SCRIPT[i]);
+      }
+    }
+  }
+
+  /* start once the device scrolls into view */
+  if ('IntersectionObserver' in window){
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ loop(); io2.disconnect(); } });
+    }, { threshold: 0.25 });
+    io2.observe(stage);
+  } else {
+    loop();
+  }
+})();
+</script>
+</body>
+</html>
