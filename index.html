@@ -88,6 +88,18 @@ nav.scrolled .nav-in{height:56px}
 .nav-link{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-decoration:none;color:var(--dim);padding:6px 4px;transition:color .16s ease;white-space:nowrap}
 .nav-link:hover{color:var(--paper)}
 
+/* ---------- mobile nav ---------- */
+@media(max-width:640px){
+  .nav-tag{display:none}
+}
+@media(max-width:560px){
+  .nav-cta{display:none}
+  .nav-in{gap:10px;height:56px}
+  nav.scrolled .nav-in{height:50px}
+  .nav-link{font-size:12.5px;padding:6px 5px}
+  .wordmark{font-size:16px}
+}
+
 /* ---------- pricing / affordability ---------- */
 .price-grid{display:grid;gap:16px;grid-template-columns:1fr;margin-top:44px}
 @media(min-width:760px){.price-grid{grid-template-columns:repeat(3,1fr)}}
