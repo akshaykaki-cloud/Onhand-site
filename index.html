@@ -54,15 +54,23 @@ h2.hd{
 /* ---------- shell ---------- */
 .wrap{max-width:1180px;margin:0 auto;padding-inline:var(--gut)}
 section{position:relative;padding-block:clamp(72px,10vw,132px)}
+section[id]{scroll-margin-top:80px}
 .hair{height:1px;background:var(--rule);border:0;margin:0}
 
 /* ---------- nav ---------- */
 nav{
   position:sticky;top:0;z-index:60;
-  background:rgba(12,14,16,.82);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--rule);
+  background:rgba(12,14,16,.72);backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:background .35s ease,border-color .35s ease,box-shadow .35s ease;
 }
-.nav-in{display:flex;align-items:center;gap:14px;height:62px}
+nav.scrolled{
+  background:rgba(12,14,16,.9);
+  border-bottom-color:var(--rule);
+  box-shadow:0 8px 30px -18px rgba(0,0,0,.8);
+}
+.nav-in{display:flex;align-items:center;gap:14px;height:64px;transition:height .35s cubic-bezier(.16,1,.3,1)}
+nav.scrolled .nav-in{height:56px}
 .mark{width:30px;height:30px;border-radius:8px;background:var(--amber);display:grid;place-items:center;flex-shrink:0}
 .wordmark{font-family:var(--dsp);font-weight:800;font-size:17px;letter-spacing:-.02em}
 .nav-tag{
@@ -77,6 +85,44 @@ nav{
   transition:transform .18s ease,filter .18s ease;
 }
 .nav-cta:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.nav-link{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-decoration:none;color:var(--dim);padding:6px 4px;transition:color .16s ease;white-space:nowrap}
+.nav-link:hover{color:var(--paper)}
+
+/* ---------- pricing / affordability ---------- */
+.price-grid{display:grid;gap:16px;grid-template-columns:1fr;margin-top:44px}
+@media(min-width:760px){.price-grid{grid-template-columns:repeat(3,1fr)}}
+.price-card{border:1px solid var(--rule);border-radius:13px;background:var(--steel);padding:24px 22px;transition:border-color .22s ease,transform .22s ease}
+.price-card:hover{border-color:var(--amber);transform:translateY(-3px)}
+.price-card .ic{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:12px}
+.price-card h3{font-family:var(--dsp);font-weight:700;font-size:17.5px;letter-spacing:-.02em;margin:0 0 9px}
+.price-card p{margin:0;font-size:14.5px;color:var(--dim);line-height:1.62}
+.price-banner{margin-top:36px;padding:26px clamp(20px,4vw,38px);border:1px solid var(--rule);border-radius:13px;background:linear-gradient(180deg,rgba(245,166,35,.05),transparent);text-align:center}
+.price-banner p{font-family:var(--dsp);font-weight:700;letter-spacing:-.02em;line-height:1.32;font-size:clamp(19px,2.7vw,26px);margin:0 0 8px}
+.price-banner p span{color:var(--amber)}
+.price-banner small{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.03em}
+
+/* ---------- contact ---------- */
+.contact{border-top:1px solid var(--rule)}
+.contact-in{display:grid;gap:clamp(28px,4vw,54px);grid-template-columns:1fr;margin-top:12px}
+@media(min-width:860px){.contact-in{grid-template-columns:.9fr 1.1fr;align-items:start}}
+.contact-side .lede{margin-bottom:24px}
+.contact-detail{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--rule)}
+.contact-detail:last-child{border-bottom:1px solid var(--rule)}
+.contact-detail .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);width:64px;flex-shrink:0}
+.contact-detail a{font-size:15px;color:var(--paper);text-decoration:none;font-weight:500}
+.contact-detail a:hover{color:var(--amber)}
+.form{border:1px solid var(--rule);border-radius:14px;background:var(--steel);padding:clamp(22px,3vw,30px)}
+.form label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 7px}
+.form .frow{margin-bottom:16px}
+.form input,.form textarea{width:100%;box-sizing:border-box;background:var(--void);border:1px solid var(--rule);border-radius:9px;color:var(--paper);font-family:var(--body);font-size:15px;padding:12px 13px;outline:none;transition:border-color .16s ease}
+.form input:focus,.form textarea:focus{border-color:var(--amber)}
+.form textarea{resize:vertical;min-height:110px;line-height:1.5}
+.form .submit{width:100%;background:var(--amber);color:var(--amber-dk);border:none;border-radius:9px;font-family:var(--dsp);font-weight:700;font-size:15px;padding:14px;cursor:pointer;transition:filter .16s ease,transform .16s ease}
+.form .submit:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.form .fnote{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:12px;text-align:center;line-height:1.5}
+.form-ok{display:none;text-align:center;padding:24px 10px}
+.form-ok h3{font-family:var(--dsp);font-weight:800;font-size:22px;margin:0 0 8px;color:var(--go)}
+.form-ok p{color:var(--dim);font-size:15px;margin:0}
 
 /* ---------- hero ---------- */
 .hero{padding-top:clamp(52px,7vw,86px);padding-bottom:clamp(56px,7vw,96px);overflow:hidden}
@@ -97,6 +143,7 @@ nav{
 }
 @keyframes breathe{50%{opacity:.55;transform:scale(1.14)}}
 .hero-in{position:relative;z-index:1;display:grid;gap:clamp(40px,5vw,66px);grid-template-columns:1fr;align-items:center}
+.hero-in>div{min-width:0}
 @media(min-width:940px){.hero-in{grid-template-columns:1.02fr .98fr}}
 
 .h1{
@@ -104,11 +151,11 @@ nav{
   font-size:clamp(40px,7.2vw,74px);margin:0 0 22px;
 }
 .h1 .lit{
-  color:var(--amber);position:relative;white-space:nowrap;
-}
-.h1 .lit::after{
-  content:"";position:absolute;left:0;right:0;bottom:.08em;height:.09em;
-  background:var(--amber);opacity:.28;
+  color:var(--amber);
+  text-decoration-line:underline;
+  text-decoration-color:rgba(245,166,35,.3);
+  text-decoration-thickness:.07em;
+  text-underline-offset:.1em;
 }
 .hero-sub{font-size:clamp(16.5px,1.8vw,19.5px);color:var(--dim);max-width:50ch;margin:0 0 30px}
 .hero-sub strong{color:var(--paper);font-weight:600}
@@ -273,14 +320,23 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 .foot-in .sp{flex:1}
 
 /* ---------- reveal ---------- */
-.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.22,.7,.3,1),transform .7s cubic-bezier(.22,.7,.3,1)}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);will-change:opacity,transform}
 .rv.in{opacity:1;transform:none}
-.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}
+.rv-d1{transition-delay:.07s}.rv-d2{transition-delay:.14s}.rv-d3{transition-delay:.21s}.rv-d4{transition-delay:.28s}
+/* auto-stagger children inside a revealing group */
+[data-stagger]>*{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+[data-stagger].in>*{opacity:1;transform:none}
+[data-stagger].in>*:nth-child(1){transition-delay:.04s}
+[data-stagger].in>*:nth-child(2){transition-delay:.12s}
+[data-stagger].in>*:nth-child(3){transition-delay:.20s}
+[data-stagger].in>*:nth-child(4){transition-delay:.28s}
+/* hero parallax layer */
+.hero-bg{will-change:transform}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
   html{scroll-behavior:auto}
-  .rv{opacity:1;transform:none}
+  .rv,[data-stagger]>*{opacity:1;transform:none}
 }
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px}
 </style>
@@ -295,6 +351,8 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
     <span class="wordmark">OnHand</span>
     <span class="nav-tag">Floor&nbsp;Assistant</span>
     <span class="nav-sp"></span>
+    <a class="nav-link" href="#pricing">Pricing</a>
+    <a class="nav-link" href="#contact">Contact</a>
     <a class="nav-cta" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Open the demo</a>
   </div>
 </nav>
@@ -307,16 +365,16 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
   <div class="wrap hero-in">
     <div>
-      <h1 class="h1 rv">It knows what's<br><span class="lit">actually on the shelf.</span></h1>
+      <h1 class="h1 rv">Your staff, answering<br><span class="lit">like they know every SKU.</span></h1>
       <p class="hero-sub rv rv-d1">
-        OnHand is an AI assistant for retail floor staff. Ask it a customer's question —
-        typed or spoken — and it answers from <strong>your store's own inventory</strong>:
-        the right product, how many are left, which aisle. And when you don't carry it,
-        it says so instead of making something up.
+        OnHand gives your floor team an AI assistant that knows <strong>your store's
+        inventory</strong>. It answers a customer's question in seconds — the right product,
+        how many you have, which aisle — so your people look sharp and customers don't
+        walk out empty-handed. And it won't invent stock you don't carry.
       </p>
       <div class="hero-btns rv rv-d2">
-        <a class="btn btn-a" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Try the live demo →</a>
-        <a class="btn btn-b" href="#how">How it works</a>
+        <a class="btn btn-a" href="#contact">Get it in your store →</a>
+        <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">See the live demo</a>
       </div>
       <div class="tagstrip rv rv-d3">
         <span class="tag">Runs on a store device</span>
@@ -349,23 +407,23 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 <section>
   <div class="wrap split">
     <div class="rv">
-      <p class="eyebrow">Where this came from</p>
+      <p class="eyebrow">The problem it solves</p>
       <blockquote class="quote">
-        When a customer asks something hard, staff quietly pull out their own phone
-        and ask a chatbot that has never seen the store.
-        <cite>— observed on a retail floor, not in a strategy deck</cite>
+        When a customer asks something your staff can't answer, they either guess,
+        walk away to go check, or quietly Google it on their phone.
+        <cite>— and every one of those can cost you the sale</cite>
       </blockquote>
     </div>
     <div class="rv rv-d1">
       <p class="lede">
-        That workaround is everywhere, and it half-works. A general chatbot knows a lot
-        about products in the abstract. It knows <strong>nothing about this store.</strong>
+        Staff are already reaching for AI on their phones. The problem is a general chatbot
+        knows products in the abstract — but knows <strong>nothing about your store.</strong>
       </p>
-      <ul class="gap-list">
-        <li><span class="x">✕</span><p>It can't tell you if it's <b>in stock right now</b>.</p></li>
-        <li><span class="x">✕</span><p>It can't tell you <b>which aisle</b> to walk the customer to.</p></li>
-        <li><span class="x">✕</span><p>It will confidently recommend something <b>you don't carry</b>.</p></li>
-        <li><span class="x">✕</span><p>It happens on a <b>personal device</b>, off the record, outside the store's control.</p></li>
+      <ul class="gap-list" data-stagger>
+        <li><span class="x">✕</span><p>It can't say if it's <b>in stock right now</b> at your shop.</p></li>
+        <li><span class="x">✕</span><p>It can't tell them <b>which aisle</b> to walk the customer to.</p></li>
+        <li><span class="x">✕</span><p>It confidently recommends things <b>you don't even carry</b>.</p></li>
+        <li><span class="x">✕</span><p>It's on a <b>personal phone</b>, off the record, outside your control.</p></li>
       </ul>
     </div>
   </div>
@@ -407,11 +465,12 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 <section class="constraint">
   <div class="wrap">
     <div class="rv">
-      <p class="eyebrow">The part that matters</p>
-      <h2 class="hd">The most useful thing it does<br>is admit what it doesn't have.</h2>
+      <p class="eyebrow">Why it's trustworthy</p>
+      <h2 class="hd">It won't embarrass your staff<br>with an answer that's wrong.</h2>
       <p class="lede">
-        A tool that invents stock is <strong>worse than no tool</strong> — because staff believe it,
-        repeat it to a customer, and the trust is gone. So OnHand is built to refuse.
+        A tool that invents stock is <strong>worse than no tool</strong> — your staff repeat it to a
+        customer, and your credibility takes the hit. So OnHand is built to only answer from
+        what's actually on your shelves.
       </p>
     </div>
 
@@ -444,9 +503,9 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 <section>
   <div class="wrap">
     <div class="rv">
-      <p class="eyebrow">For a small store</p>
-      <h2 class="hd">What actually changes on the floor.</h2>
-      <p class="lede">Not "AI transformation." Four specific things a small retailer feels in a week.</p>
+      <p class="eyebrow">What you get</p>
+      <h2 class="hd">What changes in your store.</h2>
+      <p class="lede">Not "AI transformation." Four specific things you'll notice on your floor in the first week.</p>
     </div>
     <div class="vals">
       <div class="val rv">
@@ -473,51 +532,107 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
-<!-- ===================== LEARNED ===================== -->
-<section class="learned">
+<!-- ===================== CTA ===================== -->
+<section class="cta">
   <div class="wrap">
-    <div class="rv">
-      <p class="eyebrow">Honest notes</p>
-      <h2 class="hd">What I found when I checked.</h2>
-    </div>
-    <div class="note rv rv-d1">
-      <p>
-        I built OnHand because I watched the problem happen on a sales floor. Then I did the thing
-        that's easy to skip: <strong>I checked whether anyone had already solved it.</strong>
-      </p>
-      <p>
-        They had. Ace Hardware, Lowe's and Walmart have all shipped associate-facing assistants
-        grounded in store inventory — at a scale a solo build can't approach. That closed one door
-        and opened a smaller, more honest one: those tools serve their own stores. The independent
-        retailer with a few locations and no in-house team still has the problem and no way to buy
-        a solution.
-      </p>
-      <p>
-        So OnHand isn't a pitch to displace anyone. It's a working answer to a narrower question —
-        <strong>what does this look like for a store that will never get an enterprise rollout?</strong>
-        Built to run on a real catalog, deploy in an afternoon, and be honest about its limits.
-      </p>
+    <h2 class="rv">Try it on your<br>own products.</h2>
+    <p class="rv rv-d1">See exactly how OnHand would answer your customers' questions, running on your store's inventory. Setup takes an afternoon — reach out and I'll walk you through it.</p>
+    <div class="cta-btns rv rv-d2">
+      <a class="btn btn-a" href="#contact">Get it in your store →</a>
+      <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">See the live demo</a>
     </div>
   </div>
 </section>
 
-<!-- ===================== CTA ===================== -->
-<section class="cta">
+<!-- ===================== PRICING / AFFORDABILITY ===================== -->
+<section id="pricing">
   <div class="wrap">
-    <h2 class="rv">See it answer<br>a real question.</h2>
-    <p class="rv rv-d1">The demo runs on a sample hardware catalog. Ask it something a customer would actually ask — then try to catch it inventing something.</p>
-    <div class="cta-btns rv rv-d2">
-      <a class="btn btn-a" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">Open the demo →</a>
-      <a class="btn btn-b" href="#how">Read how it works</a>
+    <div class="rv">
+      <p class="eyebrow">For shop owners</p>
+      <h2 class="hd">Enterprise capability,<br>independent-shop simple.</h2>
+      <p class="lede">The big chains spent millions building this. You don't have to. OnHand is designed to drop into a store like yours with <strong>almost nothing to lose by trying</strong>.</p>
+    </div>
+
+    <div class="price-grid">
+      <article class="price-card rv">
+        <span class="ic">No new hardware</span>
+        <h3>Runs on what you have</h3>
+        <p>It works on a tablet or phone you already own. No kiosks to buy, no equipment to install, no wiring.</p>
+      </article>
+      <article class="price-card rv rv-d1">
+        <span class="ic">Live in an afternoon</span>
+        <h3>Set up from your export</h3>
+        <p>Send your product list from your existing POS. It's loaded, branded to your store, and answering questions the same day — no IT project.</p>
+      </article>
+      <article class="price-card rv rv-d2">
+        <span class="ic">Low commitment</span>
+        <h3>Priced for a small shop</h3>
+        <p>Built for independent retailers, not enterprise budgets. Start with a simple pilot and see if it earns its keep before you commit.</p>
+      </article>
+    </div>
+
+    <div class="price-banner rv">
+      <p>Affordable to start, quick to set up, <span>and nothing to lose by piloting it.</span></p>
+      <small>Every store's a little different — tell me about yours and I'll give you a straight answer on cost and setup.</small>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">Get in touch</p>
+      <h2 class="hd">See if it fits your store.</h2>
+    </div>
+    <div class="contact-in">
+      <div class="contact-side rv">
+        <p class="lede">Tell me a bit about your shop — what you sell and how big the team is — and I'll show you what OnHand would look like running on your inventory. No pressure, no jargon.</p>
+        <div class="contact-detail">
+          <span class="lbl">Email</span>
+          <a href="mailto:akshayk.inbox@gmail.com">akshayk.inbox@gmail.com</a>
+        </div>
+        <div class="contact-detail">
+          <span class="lbl">Phone</span>
+          <a href="tel:+16472849293">647-284-9293</a>
+        </div>
+      </div>
+
+      <div class="rv rv-d1">
+        <form class="form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div class="frow">
+            <label for="cf-name">Your name</label>
+            <input id="cf-name" name="name" type="text" required placeholder="Jane Smith" />
+          </div>
+          <div class="frow">
+            <label for="cf-shop">Store name</label>
+            <input id="cf-shop" name="store" type="text" placeholder="Jane's Hardware" />
+          </div>
+          <div class="frow">
+            <label for="cf-email">Email</label>
+            <input id="cf-email" name="email" type="email" required placeholder="jane@janeshardware.com" />
+          </div>
+          <div class="frow">
+            <label for="cf-msg">What do you sell, and what's your team size?</label>
+            <textarea id="cf-msg" name="message" required placeholder="We're a 4-person hardware shop, ~3,000 SKUs…"></textarea>
+          </div>
+          <button class="submit" type="submit">Send message</button>
+          <div class="fnote">I read every message and reply personally, usually within a day.</div>
+        </form>
+        <div class="form-ok" id="formOk">
+          <h3>Message sent ✓</h3>
+          <p>Thanks — I'll get back to you personally, usually within a day.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap foot-in">
-    <span>ONHAND — AI FLOOR ASSISTANT</span>
+    <span>ONHAND — AI FLOOR ASSISTANT FOR INDEPENDENT RETAILERS</span>
     <span class="sp"></span>
-    <span>BUILT BY AKSHAY · KINGSTON, ON</span>
+    <span>KINGSTON, ON · <a href="#contact" style="color:var(--amber);text-decoration:none">GET IN TOUCH</a></span>
   </div>
 </footer>
 
@@ -526,17 +641,40 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- scroll reveals ---------- */
-  var rv = document.querySelectorAll('.rv');
+  var revealEls = document.querySelectorAll('.rv, [data-stagger]');
   if (reduce || !('IntersectionObserver' in window)) {
-    rv.forEach(function(el){ el.classList.add('in'); });
+    revealEls.forEach(function(el){ el.classList.add('in'); });
   } else {
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    rv.forEach(function(el){ io.observe(el); });
+    revealEls.forEach(function(el){ io.observe(el); });
   }
+
+  /* ---------- nav: gain weight once you scroll past the hero ---------- */
+  var navEl = document.querySelector('nav');
+  var heroBg = document.querySelector('.hero-bg');
+  var ticking = false;
+
+  function onScroll(){
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if (navEl){
+      if (y > 24) navEl.classList.add('scrolled');
+      else navEl.classList.remove('scrolled');
+    }
+    // subtle hero parallax — background drifts slower than the page
+    if (heroBg && !reduce && y < window.innerHeight){
+      heroBg.style.transform = 'translate3d(0,' + (y * 0.18) + 'px,0)';
+    }
+    ticking = false;
+  }
+  function requestScroll(){
+    if (!ticking){ ticking = true; window.requestAnimationFrame(onScroll); }
+  }
+  window.addEventListener('scroll', requestScroll, { passive: true });
+  onScroll();
 
   /* ---------- the hero demo: OnHand demonstrating itself ---------- */
   var stage = document.getElementById('stage');
@@ -628,6 +766,45 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   } else {
     loop();
   }
+})();
+
+/* ---------- contact form (Formspree AJAX) ---------- */
+(function(){
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var action = form.getAttribute('action') || '';
+    var btn = form.querySelector('.submit');
+
+    // If the endpoint hasn't been set yet, fall back to email so nothing is lost.
+    if (action.indexOf('formspree.io/f/') === -1 || action.indexOf('YOUR_FORM_ID') !== -1){
+      var body = encodeURIComponent(
+        'Name: ' + (form.name.value||'') + '\nStore: ' + (form.store.value||'') +
+        '\nEmail: ' + (form.email.value||'') + '\n\n' + (form.message.value||'')
+      );
+      window.location.href = 'mailto:akshayk.inbox@gmail.com?subject=OnHand%20enquiry&body=' + body;
+      return;
+    }
+
+    btn.textContent = 'Sending…'; btn.disabled = true;
+    fetch(action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(r){
+      if (r.ok){
+        form.style.display = 'none';
+        document.getElementById('formOk').style.display = 'block';
+      } else {
+        btn.textContent = 'Send message'; btn.disabled = false;
+        alert('Something went wrong — please email akshayk.inbox@gmail.com directly.');
+      }
+    }).catch(function(){
+      btn.textContent = 'Send message'; btn.disabled = false;
+      alert('Something went wrong — please email akshayk.inbox@gmail.com directly.');
+    });
+  });
 })();
 </script>
 </body>
