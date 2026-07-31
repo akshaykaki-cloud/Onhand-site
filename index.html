@@ -331,6 +331,19 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 .foot-in{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em}
 .foot-in .sp{flex:1}
 
+/* ---------- audience tabs ---------- */
+.aud{display:flex;justify-content:center;margin-bottom:clamp(28px,4vw,44px)}
+.aud-sw{display:inline-flex;background:var(--steel);border:1px solid var(--rule);border-radius:30px;padding:4px;position:relative}
+.aud-sw button{border:none;background:transparent;color:var(--dim);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:9px 20px;border-radius:26px;cursor:pointer;transition:color .25s ease;position:relative;z-index:1;white-space:nowrap}
+.aud-sw button.on{color:var(--amber-dk);font-weight:600}
+.aud-glide{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);background:var(--amber);border-radius:26px;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+body.wholesale .aud-glide{transform:translateX(100%)}
+/* audience content visibility (retail leads by default) */
+.tab-wholesale{display:none}
+body.wholesale .tab-retail{display:none}
+body.wholesale .tab-wholesale{display:block}
+@media(max-width:560px){ .aud-sw button{padding:9px 15px;font-size:11px} }
+
 /* ---------- reveal ---------- */
 .rv{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);will-change:opacity,transform}
 .rv.in{opacity:1;transform:none}
@@ -375,29 +388,61 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
     <div class="hero-grid"></div>
     <div class="hero-glow"></div>
   </div>
+  <div class="wrap">
+    <div class="aud rv">
+      <div class="aud-sw" role="tablist">
+        <span class="aud-glide" aria-hidden="true"></span>
+        <button id="tabRetail" class="on" role="tab">For Retailers</button>
+        <button id="tabWholesale" role="tab">For Wholesalers</button>
+      </div>
+    </div>
+  </div>
   <div class="wrap hero-in">
     <div>
-      <h1 class="h1 rv">Your staff, answering<br><span class="lit">like they know every SKU.</span></h1>
-      <p class="hero-sub rv rv-d1">
-        OnHand gives your floor team an AI assistant that knows <strong>your store's
-        inventory</strong>. It answers a customer's question in seconds — the right product,
-        how many you have, which aisle — so your people look sharp and customers don't
-        walk out empty-handed. And it won't invent stock you don't carry.
-      </p>
-      <div class="hero-btns rv rv-d2">
-        <a class="btn btn-a" href="#contact">Get it in your store →</a>
-        <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">See the live demo</a>
+      <!-- RETAIL hero copy -->
+      <div class="tab-retail">
+        <h1 class="h1 rv">Your staff, answering<br><span class="lit">like they know every SKU.</span></h1>
+        <p class="hero-sub rv rv-d1">
+          OnHand gives your floor team an AI assistant that knows <strong>your store's
+          inventory</strong>. It answers a customer's question in seconds — the right product,
+          how many you have, which aisle — so your people look sharp and customers don't
+          walk out empty-handed. And it won't invent stock you don't carry.
+        </p>
+        <div class="hero-btns rv rv-d2">
+          <a class="btn btn-a" href="#contact">Get it in your store →</a>
+          <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html?mode=retail" target="_blank" rel="noopener noreferrer">See the live demo</a>
+        </div>
+        <div class="tagstrip rv rv-d3">
+          <span class="tag">Runs on a store device</span>
+          <span class="tag">Voice or text</span>
+          <span class="tag">Live stock &amp; aisle</span>
+          <span class="tag">Won't invent stock</span>
+        </div>
       </div>
-      <div class="tagstrip rv rv-d3">
-        <span class="tag">Runs on a store device</span>
-        <span class="tag">Voice or text</span>
-        <span class="tag">Live stock &amp; aisle</span>
-        <span class="tag">Won't invent stock</span>
+      <!-- WHOLESALE hero copy -->
+      <div class="tab-wholesale">
+        <h1 class="h1 rv">Drowning in SKUs?<br><span class="lit">Just ask your inventory.</span></h1>
+        <p class="hero-sub rv rv-d1">
+          OnHand gives your team an AI that knows <strong>your entire stock</strong>. Ask in
+          plain words — what's running low, what's overstocked, what to reorder, whether you
+          can fill a 500-unit order — and get the answer in seconds, grounded in your real
+          numbers. Never a guess.
+        </p>
+        <div class="hero-btns rv rv-d2">
+          <a class="btn btn-a" href="#contact">Get it for your business →</a>
+          <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html?mode=wholesale" target="_blank" rel="noopener noreferrer">See the live demo</a>
+        </div>
+        <div class="tagstrip rv rv-d3">
+          <span class="tag">Thousands of SKUs</span>
+          <span class="tag">Reorder alerts</span>
+          <span class="tag">Order fulfilment</span>
+          <span class="tag">Dead-stock surfacing</span>
+        </div>
       </div>
     </div>
 
-    <!-- signature: the product demonstrating itself -->
-    <div class="device rv rv-d2" role="img" aria-label="A demonstration of OnHand answering two questions: first recommending toggle bolts with 34 in stock in Aisle 7, then reporting that N95 masks are out of stock with no substitute available.">
+    <!-- signature: the product demonstrating itself (animation switches per audience) -->
+    <div class="device rv rv-d2" role="img" aria-label="A live demonstration of OnHand answering inventory questions.">
       <div class="dev-bar">
         <span class="mark" style="width:26px;height:26px;border-radius:7px" aria-hidden="true">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 12a6 6 0 0 1 11-3.3l-2.2 2.2a3 3 0 1 0 .1 4.2l4.6 4.6a1.5 1.5 0 0 0 2.1-2.1l-4.6-4.6A6 6 0 0 1 6 12Z" fill="#2B2011" transform="translate(-1 -1) scale(.9)"/><circle cx="8.5" cy="12" r="2.3" fill="#2B2011"/></svg>
@@ -416,7 +461,7 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 <hr class="hair">
 
 <!-- ===================== PROBLEM ===================== -->
-<section>
+<section class="tab-retail">
   <div class="wrap split">
     <div class="rv">
       <p class="eyebrow">The problem it solves</p>
@@ -441,10 +486,37 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
+<!-- ===================== PROBLEM (wholesale) ===================== -->
+<section class="tab-wholesale">
+  <div class="wrap split">
+    <div class="rv">
+      <p class="eyebrow">The problem it solves</p>
+      <blockquote class="quote">
+        Nobody can hold thousands of SKUs in their head. So reorders slip, cash sits
+        in dead stock, and bulk orders get promised on a guess.
+        <cite>— and every one of those quietly costs you money</cite>
+      </blockquote>
+    </div>
+    <div class="rv rv-d1">
+      <p class="lede">
+        Your inventory data has the answers, but it's buried in a system nobody wants to
+        query. A spreadsheet can't tell you what needs attention — <strong>you have to go
+        looking, and by then it's late.</strong>
+      </p>
+      <ul class="gap-list" data-stagger>
+        <li><span class="x">✕</span><p>You can't see what's <b>below reorder point</b> without digging.</p></li>
+        <li><span class="x">✕</span><p>Cash is tied up in <b>overstock you forgot about</b>.</p></li>
+        <li><span class="x">✕</span><p>A customer wants 500 units and you're <b>guessing if you can fill it</b>.</p></li>
+        <li><span class="x">✕</span><p><b>Dead stock</b> sits for months before anyone notices.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <hr class="hair">
 
 <!-- ===================== HOW ===================== -->
-<section id="how">
+<section id="how" class="tab-retail">
   <div class="wrap">
     <div class="rv">
       <p class="eyebrow">How it works</p>
@@ -471,10 +543,38 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
+<!-- ===================== HOW (wholesale) ===================== -->
+<section class="tab-wholesale">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">How it works</p>
+      <h2 class="hd">Three steps, no IT project.</h2>
+      <p class="lede">OnHand reads your inventory the way a sharp operations manager would — then answers instantly, any time you ask.</p>
+    </div>
+    <div class="steps">
+      <article class="step rv">
+        <span class="step-n">STEP 01</span>
+        <h3>Your inventory goes in</h3>
+        <p>Export from whatever system you already run. A setup tool maps your columns — SKU, quantity, cost, reorder point, lead time — and loads them. Live the same day, no ERP project.</p>
+      </article>
+      <article class="step rv rv-d1">
+        <span class="step-n">STEP 02</span>
+        <h3>Your team asks in plain words</h3>
+        <p>"What's below reorder point?" "Can we fill 500 units of the 3/4&quot; PVC?" "What's overstocked?" No queries to write, no reports to build. Typed or spoken.</p>
+      </article>
+      <article class="step rv rv-d2">
+        <span class="step-n">STEP 03</span>
+        <h3>It answers with the numbers</h3>
+        <p>The flagged items, the quantities, the inventory value, when to reorder and how much — computed across your whole catalog, grounded in your real data.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
 <hr class="hair">
 
 <!-- ===================== THE CONSTRAINT ===================== -->
-<section class="constraint">
+<section class="constraint tab-retail">
   <div class="wrap">
     <div class="rv">
       <p class="eyebrow">Why it's trustworthy</p>
@@ -509,10 +609,46 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
+<!-- ===================== THE CONSTRAINT (wholesale) ===================== -->
+<section class="constraint tab-wholesale">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">Why you can trust it</p>
+      <h2 class="hd">It runs on your real numbers —<br>never a guess.</h2>
+      <p class="lede">
+        A tool that invents stock levels is <strong>worse than no tool</strong> — you'd reorder the
+        wrong things and promise orders you can't fill. So OnHand only answers from your
+        actual inventory data, and says so plainly when it doesn't know.
+      </p>
+    </div>
+
+    <div class="vs">
+      <article class="pane pane-bad rv">
+        <div class="pane-hd"><span>✕</span> Generic chatbot</div>
+        <div class="pane-body">
+          <p class="ask">"Can we fill an order for 500 units of 3/4&quot; PVC elbows?"</p>
+          <p class="reply">Yes, that should be no problem — PVC fittings are typically high-stock items and 500 units is a standard wholesale quantity.</p>
+          <p class="verdict">Confident. Wrong. You only had 180 in stock. Order over-promised.</p>
+        </div>
+      </article>
+      <article class="pane pane-good rv rv-d1">
+        <div class="pane-hd"><span>●</span> OnHand</div>
+        <div class="pane-body">
+          <p class="ask">"Can we fill an order for 500 units of 3/4&quot; PVC elbows?"</p>
+          <p class="reply">Not in full — 180 on hand against 500. Shortfall of 320. Supplier lead time is 12 days, so the balance could land mid-month if you order today.</p>
+          <p class="verdict">Grounded. Honest. You quote the customer the real timeline.</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="pull rv">Every answer is tied to a real number in your inventory. <span>If the data doesn't have it, OnHand won't make it up.</span></p>
+  </div>
+</section>
+
 <hr class="hair">
 
 <!-- ===================== VALUE ===================== -->
-<section>
+<section class="tab-retail">
   <div class="wrap">
     <div class="rv">
       <p class="eyebrow">What you get</p>
@@ -544,20 +680,65 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
+<!-- ===================== VALUE (wholesale) ===================== -->
+<section class="tab-wholesale">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">What you get</p>
+      <h2 class="hd">What changes in your operation.</h2>
+      <p class="lede">Not "AI transformation." Four specific things you'll feel in the first week.</p>
+    </div>
+    <div class="vals">
+      <div class="val rv">
+        <span class="val-k">Visibility</span>
+        <h3>Stock intelligence on demand</h3>
+        <p>See what's low, overstocked, or dead across your whole catalog in one question — instead of building a report or trusting your gut.</p>
+      </div>
+      <div class="val rv rv-d1">
+        <span class="val-k">Reorders</span>
+        <h3>Never miss a reorder</h3>
+        <p>Ask what's below reorder point and get a ranked list — with suggested quantities and lead times — before you run out and lose the sale.</p>
+      </div>
+      <div class="val rv rv-d2">
+        <span class="val-k">Fulfilment</span>
+        <h3>Answer bulk orders on the spot</h3>
+        <p>"Can we fill 500 units?" gets an instant yes or no, with the exact shortfall and when the balance could arrive — no more over-promising.</p>
+      </div>
+      <div class="val rv rv-d3">
+        <span class="val-k">Cash flow</span>
+        <h3>Free up working capital</h3>
+        <p>Surface the dead and overstocked items quietly tying up your cash, so you can move them instead of reordering more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===================== CTA ===================== -->
-<section class="cta">
+<section class="cta tab-retail">
   <div class="wrap">
     <h2 class="rv">Try it on your<br>own products.</h2>
     <p class="rv rv-d1">See exactly how OnHand would answer your customers' questions, running on your store's inventory. Setup takes an afternoon — reach out and I'll walk you through it.</p>
     <div class="cta-btns rv rv-d2">
       <a class="btn btn-a" href="#contact">Get it in your store →</a>
-      <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html" target="_blank" rel="noopener noreferrer">See the live demo</a>
+      <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html?mode=retail" target="_blank" rel="noopener noreferrer">See the live demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA (wholesale) ===================== -->
+<section class="cta tab-wholesale">
+  <div class="wrap">
+    <h2 class="rv">Try it on your<br>own inventory.</h2>
+    <p class="rv rv-d1">See exactly how OnHand would answer your team's questions, running on your real stock. Setup takes a day — reach out and I'll walk you through it.</p>
+    <div class="cta-btns rv rv-d2">
+      <a class="btn btn-a" href="#contact">Get it for your business →</a>
+      <a class="btn btn-b" href="https://onhand-demo.vercel.app/app.html?mode=wholesale" target="_blank" rel="noopener noreferrer">See the live demo</a>
     </div>
   </div>
 </section>
 
 <!-- ===================== PRICING / AFFORDABILITY ===================== -->
-<section id="pricing">
+<section id="pricing" class="tab-retail">
   <div class="wrap">
     <div class="rv">
       <p class="eyebrow">For shop owners</p>
@@ -590,16 +771,50 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
   </div>
 </section>
 
+<!-- ===================== PRICING (wholesale) ===================== -->
+<section class="tab-wholesale">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">For wholesalers</p>
+      <h2 class="hd">Enterprise inventory tools,<br>without the enterprise price.</h2>
+      <p class="lede">The big distributors run six-figure ERP add-ons to answer these questions. OnHand gives you the same answers on the stock you already track — with <strong>almost nothing to lose by trying</strong>.</p>
+    </div>
+
+    <div class="price-grid">
+      <article class="price-card rv">
+        <span class="ic">No new system</span>
+        <h3>Works with what you run</h3>
+        <p>It sits alongside your current setup — no rip-and-replace, no migration, no IT department required.</p>
+      </article>
+      <article class="price-card rv rv-d1">
+        <span class="ic">Live in a day</span>
+        <h3>Set up from an export</h3>
+        <p>Send an export of your inventory. It's loaded, mapped to your reorder points and costs, and answering questions the same day.</p>
+      </article>
+      <article class="price-card rv rv-d2">
+        <span class="ic">Low commitment</span>
+        <h3>Priced for an independent distributor</h3>
+        <p>Built for independent wholesalers, not enterprise budgets. Start with a pilot and see what it surfaces before you commit.</p>
+      </article>
+    </div>
+
+    <div class="price-banner rv">
+      <p>Affordable to start, quick to set up, <span>and nothing to lose by piloting it.</span></p>
+      <small>Every operation is a little different — tell me about yours and I'll give you a straight answer on cost and setup.</small>
+    </div>
+  </div>
+</section>
+
 <!-- ===================== CONTACT ===================== -->
 <section id="contact" class="contact">
   <div class="wrap">
     <div class="rv">
       <p class="eyebrow">Get in touch</p>
-      <h2 class="hd">See if it fits your store.</h2>
+      <h2 class="hd">See if it fits your business.</h2>
     </div>
     <div class="contact-in">
       <div class="contact-side rv">
-        <p class="lede">Tell me a bit about your shop — what you sell and how big the team is — and I'll show you what OnHand would look like running on your inventory. No pressure, no jargon.</p>
+        <p class="lede">Tell me a bit about your business — what you sell and how big the team is — and I'll show you what OnHand would look like running on your inventory. No pressure, no jargon.</p>
         <div class="contact-detail">
           <span class="lbl">Email</span>
           <a href="mailto:akshayk.inbox@gmail.com">akshayk.inbox@gmail.com</a>
@@ -690,9 +905,8 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
 
   /* ---------- the hero demo: OnHand demonstrating itself ---------- */
   var stage = document.getElementById('stage');
-  if (!stage) return;
 
-  var SCRIPT = [
+  var SCRIPT_RETAIL = [
     {
       q: 'Customer wants to hang a 45 lb mirror on drywall',
       a: 'Use the heavy-duty toggle bolts — rated 50–65 lb each in 1/2" drywall, so they clear 45 lb comfortably. The self-drilling anchors only hold 25 lb, so those won\'t do it.',
@@ -705,6 +919,21 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
     }
   ];
 
+  var SCRIPT_WHOLESALE = [
+    {
+      q: "What's below reorder point right now?",
+      a: '7 items are at or below reorder — 2 at zero. Most urgent: N95 Respirators at 0 (9-day lead, reorder now) and 3/4" PVC Elbows at 8 against a reorder point of 20.',
+      slip: { name: 'N95 Respirators (10 pk)', price: '$19.00', meta: '3M · Safety · SF-8050', stock: '● 0 — URGENT REORDER', loc: 'Lead 9 days', out: true }
+    },
+    {
+      q: 'Can we fill an order for 500 units of 3/4" PVC elbows?',
+      a: 'Not in full — 180 on hand against 500, short 320. Supplier lead time is 12 days, so the balance could land mid-month if you order today.',
+      slip: { name: '3/4" PVC Elbow', price: '$0.84', meta: 'Charlotte · Fittings · PL-6020', stock: '● 180 on hand — short 320', loc: 'Lead 12 days', out: true }
+    }
+  ];
+
+  var ACTIVE = SCRIPT_RETAIL;
+
   function el(cls, html){ var d = document.createElement('div'); d.className = cls; if (html != null) d.innerHTML = html; return d; }
   function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
@@ -715,19 +944,15 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
            '<span class="slip-loc">' + s.loc + '</span></div>';
   }
 
-  /* static fallback: show the full second exchange, no motion */
   function renderStatic(){
-    var beat = SCRIPT[1];
+    if (!stage) return;
+    var beat = ACTIVE[ACTIVE.length - 1];
     stage.innerHTML = '';
-    var q = el('msg msg-q'); q.textContent = beat.q; q.style.animation = 'none'; q.style.opacity = 1; q.style.transform = 'none';
-    var a = el('msg msg-a'); a.textContent = beat.a; a.style.animation = 'none'; a.style.opacity = 1; a.style.transform = 'none';
-    var s = el('slip' + (beat.slip.out ? ' out' : ''), slipHTML(beat.slip)); s.style.animation = 'none'; s.style.opacity = 1; s.style.transform = 'none';
+    var q = el('msg msg-q'); q.textContent = beat.q; q.style.opacity = 1; q.style.transform = 'none'; q.style.animation = 'none';
+    var a = el('msg msg-a'); a.textContent = beat.a; a.style.opacity = 1; a.style.transform = 'none'; a.style.animation = 'none';
+    var s = el('slip' + (beat.slip.out ? ' out' : ''), slipHTML(beat.slip)); s.style.opacity = 1; s.style.transform = 'none'; s.style.animation = 'none';
     stage.appendChild(q); stage.appendChild(a); stage.appendChild(s);
   }
-
-  if (reduce) { renderStatic(); return; }
-
-  var running = false;
 
   async function typeInto(node, text, speed){
     for (var i = 0; i <= text.length; i++){
@@ -742,35 +967,56 @@ footer{border-top:1px solid var(--rule);padding-block:30px}
     stage.appendChild(q);
     await typeInto(q, beat.q, 26);
     await wait(320);
-
     var w = el('working', '<span></span><span></span><span></span><b>searching inventory…</b>');
     stage.appendChild(w);
     await wait(1150);
     w.remove();
-
     var a = el('msg msg-a');
     a.textContent = beat.a;
     stage.appendChild(a);
     await wait(560);
-
     var s = el('slip' + (beat.slip.out ? ' out' : ''), slipHTML(beat.slip));
     stage.appendChild(s);
     await wait(3400);
   }
 
+  var running = false;
   async function loop(){
-    if (running) return;
+    if (running || !stage) return;
     running = true;
     while (true){
-      for (var i = 0; i < SCRIPT.length; i++){
+      var script = ACTIVE;
+      for (var i = 0; i < script.length; i++){
+        if (ACTIVE !== script) break;   // audience switched — restart with the new script
         stage.innerHTML = '';
-        await playBeat(SCRIPT[i]);
+        await playBeat(script[i]);
       }
     }
   }
 
+  /* ---------- audience tabs: swap all content + the demo animation ---------- */
+  function setAudience(mode){
+    var isW = (mode === 'wholesale');
+    document.body.classList.toggle('wholesale', isW);
+    var tR = document.getElementById('tabRetail'), tW = document.getElementById('tabWholesale');
+    if (tR && tW){ tR.classList.toggle('on', !isW); tW.classList.toggle('on', isW); }
+    // update the device header to match
+    var ds = document.querySelector('.dev-store'), dl = document.querySelector('.dev-live');
+    if (ds) ds.textContent = isW ? 'Bayview Supply Co · Distribution' : 'Bayview Hardware · Store #114';
+    if (dl) dl.innerHTML = '<span class="pip"></span>36 SKUs ' + (isW ? 'tracked' : 'live');
+    // swap the animation script (loop picks it up at the next beat)
+    ACTIVE = isW ? SCRIPT_WHOLESALE : SCRIPT_RETAIL;
+    if (reduce) renderStatic();
+    else if (stage) stage.innerHTML = '';
+  }
+  var tR = document.getElementById('tabRetail'), tW = document.getElementById('tabWholesale');
+  if (tR) tR.addEventListener('click', function(){ setAudience('retail'); });
+  if (tW) tW.addEventListener('click', function(){ setAudience('wholesale'); });
+
+  if (reduce) { renderStatic(); return; }
+
   /* start once the device scrolls into view */
-  if ('IntersectionObserver' in window){
+  if (stage && 'IntersectionObserver' in window){
     var io2 = new IntersectionObserver(function(entries){
       entries.forEach(function(e){ if (e.isIntersecting){ loop(); io2.disconnect(); } });
     }, { threshold: 0.25 });
